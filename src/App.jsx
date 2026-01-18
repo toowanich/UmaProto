@@ -1,25 +1,34 @@
 import { useState, useEffect } from 'react'
 import GameScreen from './GameScreen'
+import { generateHorseNames, selectRandomHorses, generateRaceGrade } from './horseNames'
 import './App.css'
 
 function App() {
+  const [horsePool] = useState(() => generateHorseNames(30))
+  
   const [gameState, setGameState] = useState({
     money: 1000,
     debt: 5000,
+    totalDebt: 5000,
     daysLeft: 30,
     currentDay: 1,
     talismans: [],
     gameOver: false,
-    won: false
+    won: false,
+    installments: [
+      { amount: 1000, dueDay: 10, paid: false },
+      { amount: 1500, dueDay: 20, paid: false },
+      { amount: 2500, dueDay: 30, paid: false }
+    ]
   })
 
-  const [races] = useState({
-    3: { horses: ['Thunder', 'Lightning', 'Storm', 'Wind'] },
-    7: { horses: ['Blaze', 'Fire', 'Ember', 'Spark'] },
-    12: { horses: ['Shadow', 'Midnight', 'Eclipse', 'Void'] },
-    18: { horses: ['Gold', 'Silver', 'Bronze', 'Copper'] },
-    25: { horses: ['Swift', 'Quick', 'Fast', 'Rapid'] }
-  })
+  const [races] = useState(() => ({
+    3: { horses: selectRandomHorses(horsePool, 4), grade: generateRaceGrade() },
+    7: { horses: selectRandomHorses(horsePool, 4), grade: generateRaceGrade() },
+    12: { horses: selectRandomHorses(horsePool, 4), grade: generateRaceGrade() },
+    18: { horses: selectRandomHorses(horsePool, 4), grade: generateRaceGrade() },
+    25: { horses: selectRandomHorses(horsePool, 4), grade: generateRaceGrade() }
+  })))
 
   useEffect(() => {
     if (gameState.daysLeft <= 0) {

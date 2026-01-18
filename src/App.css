@@ -1,1 +1,521 @@
-.app {\n  max-width: 800px;\n  margin: 0 auto;\n  padding: 20px;\n  font-family: Arial, sans-serif;\n}\n\n.game-screen {\n  display: flex;\n  flex-direction: column;\n  gap: 20px;\n}\n\n.status {\n  background: #f0f0f0;\n  padding: 15px;\n  border-radius: 8px;\n}\n\n.status h2 {\n  margin: 0 0 10px 0;\n  color: #333;\n}\n\n.status p {\n  margin: 5px 0;\n  font-weight: bold;\n}\n\n.race-result {\n  background: #e8f5e8;\n  padding: 15px;\n  border-radius: 8px;\n  border: 2px solid #4caf50;\n}\n\n.actions {\n  display: flex;\n  flex-direction: column;\n  gap: 15px;\n}\n\n.race-section {\n  background: #fff3cd;\n  padding: 15px;\n  border-radius: 8px;\n  border: 2px solid #ffc107;\n}\n\n.horses {\n  display: flex;\n  gap: 15px;\n  margin: 10px 0;\n}\n\n.horses label {\n  display: flex;\n  align-items: center;\n  gap: 5px;\n  cursor: pointer;\n}\n\n.talisman-shop {\n  background: #e7f3ff;\n  padding: 15px;\n  border-radius: 8px;\n  border: 2px solid #007bff;\n}\n\n.talisman {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding: 10px;\n  margin: 5px 0;\n  background: white;\n  border-radius: 4px;\n  border: 1px solid #ddd;\n}\n\n.talisman span:first-child {\n  font-weight: bold;\n}\n\n.talisman span:nth-child(2) {\n  font-style: italic;\n  color: #666;\n}\n\nbutton {\n  padding: 10px 20px;\n  border: none;\n  border-radius: 4px;\n  cursor: pointer;\n  font-size: 14px;\n}\n\nbutton:not(:disabled) {\n  background: #007bff;\n  color: white;\n}\n\nbutton:disabled {\n  background: #ccc;\n  cursor: not-allowed;\n}\n\n.next-day {\n  background: #28a745 !important;\n  color: white;\n  font-size: 16px;\n  padding: 15px 30px;\n}\n\n.game-over {\n  text-align: center;\n  padding: 50px;\n}\n\n.game-over h1 {\n  font-size: 3em;\n  margin-bottom: 20px;\n}\n\n.game-over button {\n  background: #007bff;\n  color: white;\n  font-size: 18px;\n  padding: 15px 30px;\n}\n\ninput[type=\"number\"] {\n  padding: 8px;\n  border: 1px solid #ddd;\n  border-radius: 4px;\n  margin: 0 10px;\n  width: 100px;\n}
+.app {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  color: #333;
+}
+
+.game-screen {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.race-info-btn {
+  background: linear-gradient(135deg, #f6ad55, #ed8936) !important;
+  color: white;
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 6px;
+}
+
+.race-marker {
+  font-size: 10px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.race-marker:hover {
+  transform: scale(1.2);
+}
+
+.race-grade {
+  color: #4299e1;
+  font-size: 1.1rem;
+  margin: 8px 0;
+}
+
+.race-multiplier {
+  color: #38a169;
+  font-weight: 600;
+  margin: 8px 0 16px 0;
+}
+
+.race-grade-display {
+  background: linear-gradient(135deg, #4299e1, #3182ce);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.race-info {
+  padding: 20px 0;
+}
+
+.race-info h4 {
+  margin: 0 0 16px 0;
+  color: #2d3748;
+}
+
+.horse-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.horse-item {
+  padding: 8px 12px;
+  background: #f7fafc;
+  border-radius: 6px;
+  border-left: 3px solid #4299e1;
+  font-weight: 500;
+}
+
+.calendar-btn {
+  background: linear-gradient(135deg, #667eea, #764ba2) !important;
+  color: white;
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 6px;
+}
+
+.status p span {
+  font-weight: 700;
+  color: #4299e1;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  backdrop-filter: blur(10px);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.close-btn {
+  background: none !important;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+  padding: 0 !important;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  position: relative;
+}
+
+.calendar-day.today {
+  background: linear-gradient(135deg, #4299e1, #3182ce);
+  color: white;
+}
+
+.calendar-day.past {
+  background: #e2e8f0;
+  color: #718096;
+}
+
+.calendar-day.future {
+  background: #f7fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.day-number {
+  font-weight: 600;
+}
+
+.day-of-week {
+  font-size: 8px;
+  opacity: 0.7;
+  font-weight: 400;
+}
+
+.race-marker {
+  font-size: 10px;
+}
+
+.installment-marker {
+  font-size: 8px;
+  font-weight: 600;
+  padding: 1px 3px;
+  border-radius: 3px;
+  margin-top: 2px;
+}
+
+.installment-marker.unpaid {
+  background: #fed7d7;
+  color: #c53030;
+}
+
+.installment-marker.paid {
+  background: #c6f6d5;
+  color: #2f855a;
+}
+
+.objectives h4 {
+  margin: 0 0 12px 0;
+  color: #2d3748;
+}
+
+.objective {
+  padding: 8px 12px;
+  margin: 4px 0;
+  background: #f7fafc;
+  border-radius: 6px;
+  border-left: 4px solid #e53e3e;
+}
+
+.objective.completed {
+  border-left-color: #38a169;
+  background: #f0fff4;
+}
+
+.payment-modal {
+  text-align: center;
+}
+
+.payment-info {
+  padding: 20px 0;
+}
+
+.payment-info p {
+  margin: 12px 0;
+  font-size: 1.1rem;
+}
+
+.success-text {
+  color: #2f855a;
+  font-weight: 600;
+}
+
+.error-text {
+  color: #c53030;
+  font-weight: 600;
+}
+
+.pay-btn {
+  background: linear-gradient(135deg, #48bb78, #38a169) !important;
+  color: white;
+  padding: 12px 24px;
+  font-size: 16px;
+  margin-top: 16px;
+}
+
+.restart-btn {
+  background: linear-gradient(135deg, #e53e3e, #c53030) !important;
+  color: white;
+  padding: 12px 24px;
+  font-size: 16px;
+  margin-top: 16px;
+}
+
+.next-deadline {
+  background: linear-gradient(135deg, #fed7d7, #feb2b2);
+  color: #c53030;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-top: 12px;
+  font-weight: 600;
+  border-left: 4px solid #e53e3e;
+}
+
+.status {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  grid-column: 1 / -1;
+}
+
+.status h2 {
+  margin: 0 0 16px 0;
+  color: #2d3748;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.status p {
+  margin: 8px 0;
+  font-weight: 600;
+  font-size: 1.1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.race-result {
+  background: linear-gradient(135deg, #48bb78, #38a169);
+  color: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(72, 187, 120, 0.3);
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+.race-result h3 {
+  margin: 0 0 12px 0;
+  font-size: 1.3rem;
+}
+
+.actions h3 {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.4rem;
+  font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  margin-bottom: 20px;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  grid-column: 1 / -1;
+}
+
+.race-section {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.race-section h4 {
+  margin: 0 0 16px 0;
+  font-size: 1.3rem;
+  color: #2d3748;
+}
+
+.horses {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.horses label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #f7fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.horses label:hover {
+  background: #edf2f7;
+  border-color: #cbd5e0;
+}
+
+.horses label:has(input:checked) {
+  background: linear-gradient(135deg, #4299e1, #3182ce);
+  color: white;
+  border-color: #3182ce;
+}
+
+.odds {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  font-weight: 400;
+}
+
+.talisman-shop {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 123, 255, 0.3);
+}
+
+.talisman-shop h4 {
+  margin: 0 0 16px 0;
+  font-size: 1.3rem;
+  color: #2d3748;
+}
+
+.talisman {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  align-items: center;
+  padding: 16px;
+  margin: 12px 0;
+  background: #f7fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+.talisman:hover {
+  background: #edf2f7;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+button:not(:disabled) {
+  background: linear-gradient(135deg, #4299e1, #3182ce);
+  color: white;
+  box-shadow: 0 4px 12px rgba(66, 153, 225, 0.3);
+}
+
+button:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(66, 153, 225, 0.4);
+}
+
+button:disabled {
+  background: #cbd5e0;
+  color: #a0aec0;
+  cursor: not-allowed;
+}
+
+.next-day {
+  background: linear-gradient(135deg, #48bb78, #38a169) !important;
+  font-size: 16px;
+  padding: 16px 32px;
+  margin-top: 20px;
+  box-shadow: 0 4px 12px rgba(72, 187, 120, 0.3) !important;
+}
+
+.next-day:hover {
+  box-shadow: 0 6px 20px rgba(72, 187, 120, 0.4) !important;
+}
+
+.game-over {
+  text-align: center;
+  padding: 60px 20px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.game-over h1 {
+  font-size: 3rem;
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.game-over button {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  font-size: 18px;
+  padding: 16px 32px;
+}
+
+input[type="number"] {
+  padding: 12px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  margin: 0 12px;
+  width: 120px;
+  font-size: 16px;
+  transition: border-color 0.2s ease;
+}
+
+input[type="number"]:focus {
+  outline: none;
+  border-color: #4299e1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #4299e1;
+}
+
+@media (max-width: 768px) {
+  .game-screen {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .horses {
+    grid-template-columns: 1fr;
+  }
+  
+  .app {
+    padding: 12px;
+  }
+}
