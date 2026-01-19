@@ -22,6 +22,9 @@
   align-items: center;
   margin-bottom: 16px;
 }
+.fortune-teller {
+  color: white;
+}
 
 .header-buttons {
   display: flex;
